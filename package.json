@@ -1,5 +1,5 @@
 {
-  "name": "@kierans777/crocks-ext",
+  "name": "@epistemology-factory/crocks-ext",
   "version": "0.0.1",
   "description": "Utility functions for use with Crocks",
   "scripts": {
