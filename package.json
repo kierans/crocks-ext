@@ -5,7 +5,8 @@
   "scripts": {
     "build": "cpy --cwd=src --parents . ../build && cpy package*.json README.md LICENSE build",
     "clean": "rimraf build",
-    "dist": "npm run clean && npm run test && npm run build",
+    "dist:build": "npm run clean && npm run test && npm run build",
+    "dist:publish": "cd build && npm publish",
     "test": "mocha test/**/*.js"
   },
   "keywords": [],
