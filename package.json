@@ -12,6 +12,10 @@
     "crocks": "^0.12.4"
   },
   "devDependencies": {
-    "crocks": "^0.12.4"
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^14.14.36",
+    "crocks": "^0.12.4",
+    "hamjest": "^3.7.2",
+    "mocha": "^9.0.1"
   }
 }
