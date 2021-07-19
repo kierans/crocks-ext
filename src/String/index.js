@@ -27,6 +27,9 @@ const replace = curry((search, replace, str) => str.replace(search, replace))
 // split :: String -> String -> [ String ]
 const split = curry((sep, str) => str.split(sep))
 
+// stringify :: a -> String
+const stringify = (a) => JSON.stringify(a);
+
 // lowerCase :: String -> String
 const lowerCase = (str) => str.toLowerCase()
 
@@ -63,6 +66,7 @@ module.exports = {
 	lowerCase,
 	replace,
 	split,
+	stringify,
 	toCamelCase,
 	toKebabCase,
 	upperCase

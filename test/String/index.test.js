@@ -10,6 +10,7 @@ const {
 	lowerCase,
 	replace,
 	split,
+	stringify,
 	toCamelCase,
 	toKebabCase,
 	upperCase
@@ -38,6 +39,10 @@ describe("String", function() {
 
 	it("should replace string", function() {
 		assertThat(replace(/l/g, "w", "hello"), is("hewwo"));
+	});
+
+	it("should stringify data", function() {
+		assertThat(stringify({ a: 1 }), is('{"a":1}'))
 	});
 
 	describe("camelCase", function() {
