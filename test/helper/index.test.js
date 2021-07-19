@@ -9,7 +9,7 @@ const valueOf = require("crocks/pointfree/valueOf");
 const { Just } = require("crocks/Maybe");
 const { assertThat, is } = require("hamjest");
 
-const { applyFunctor, chainLiftA2 } = require("../../src/helpers");
+const { applyFunctor, chainLiftA2, zipArgs } = require("../../src/helpers");
 
 describe("helpers", function() {
 	describe("chainLiftA2", function() {
@@ -40,6 +40,21 @@ describe("helpers", function() {
 
 			assertThat(result.y, is(2));
 			assertThat(result.z, is(3));
+		})
+	});
+
+	describe("zipArgs", function() {
+		it("should collect args", function() {
+			const one = () => 1
+			const two = () => 2
+			const three = () => 3
+
+			const result = zipArgs(one, two, three);
+
+			assertThat(result.length, is(3));
+			assertThat(result[0], is(one));
+			assertThat(result[1], is(two));
+			assertThat(result[2], is(three));
 		})
 	});
 });

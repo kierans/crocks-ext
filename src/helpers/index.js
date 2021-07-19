@@ -32,8 +32,20 @@ const applyFunctor = flip(pipe(applyTo, map));
 // chainLiftA2 :: Applicative m => (a -> b -> m c) -> m a -> m b -> m c
 const chainLiftA2 = nAry(3, composeK(identity, liftA2))
 
+/*
+ * Collects the arguments to a function into an array
+ */
+// zipArgs :: * -> [ * ]
+const zipArgs = function() {
+	/*
+	 * Can't be an arrow function because of the way Node args work.
+	 */
+	return Array.prototype.slice.call(arguments)
+}
+
 module.exports = {
 	applyFunctor,
 	chainLiftA2,
-	prepend
+	prepend,
+	zipArgs
 }
