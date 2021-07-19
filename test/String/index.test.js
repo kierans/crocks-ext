@@ -11,6 +11,7 @@ const {
 	replace,
 	split,
 	stringify,
+	trim,
 	toCamelCase,
 	toKebabCase,
 	upperCase
@@ -44,6 +45,10 @@ describe("String", function() {
 	it("should stringify data", function() {
 		assertThat(stringify({ a: 1 }), is('{"a":1}'))
 	});
+
+	it("should trim data", function() {
+		assertThat(trim("    hello   "), is("hello"));
+	})
 
 	describe("camelCase", function() {
 		it("should camel case words", function() {
