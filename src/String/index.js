@@ -12,9 +12,8 @@ const merge = require("crocks/pointfree/merge");
 const mreduce = require("crocks/helpers/mreduce");
 const option = require("crocks/pointfree/option");
 const pipe = require("crocks/helpers/pipe");
-const tail = require("crocks/pointfree/tail");
 
-const { prepend, zipArgs } = require("../helpers");
+const { emptyTail, prepend, zipArgs } = require("../helpers");
 
 // capitalise :: String -> String
 const capitalise = (str) => `${str[0].toUpperCase()}${str.substring(1)}`
@@ -34,7 +33,7 @@ const upperCase = (str) => str.toUpperCase()
 // toCamelCase :: [ String ] -> String
 const toCamelCase =
 	pipe(
-		fanout(head, tail),
+		fanout(head, emptyTail),
 		map(map(compose(join(""), map(capitalise)))),
 		merge(prepend),
 		option("")

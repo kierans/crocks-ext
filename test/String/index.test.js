@@ -40,9 +40,13 @@ describe("String", function() {
 			assertThat(toCamelCase([ "a", "var" ]), is("aVar"))
 		});
 
+		it("should passthrough single word", function() {
+			assertThat(toCamelCase([ "var" ]), is("var"));
+		});
+
 		it("should return blank string for empty list", function() {
 			assertThat(toCamelCase([]), is(""));
-		})
+		});
 	});
 
 	describe("kebab case", function() {
