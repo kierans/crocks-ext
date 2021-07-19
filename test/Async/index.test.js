@@ -2,9 +2,9 @@
 
 const constant = require("crocks/combinators/constant");
 
-const { isRejectedWith, promiseThat } = require("hamjest");
+const { assertThat, promiseThat, is, isRejectedWith } = require("hamjest");
 
-const { getProp, getPath } = require("../../src/Async");
+const { getProp, getPath, safeAsync } = require("../../src/Async");
 
 describe("Async", function() {
 	describe("getOrError", function() {
@@ -82,5 +82,26 @@ describe("Async", function() {
 				});
 			});
 		}
+	});
+
+	describe("safeAsync", function() {
+		const gt = (n) => (x) => x > n
+
+		it("should return Resolved when pred is true", async function() {
+			const error = () => { throw new Error("should not have been called") }
+			const result = await safeAsync(error, gt(10), 20).toPromise();
+
+			assertThat(result, is(20));
+		});
+
+		it("should return Err when pred is false", async function() {
+			const n = 10;
+			const error = (x) => `${x} is not gt ${n}`;
+
+			await promiseThat(
+				safeAsync(error, gt(n), 5).toPromise(),
+				isRejectedWith("5 is not gt 10")
+			)
+		});
 	});
 });
