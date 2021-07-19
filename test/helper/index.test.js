@@ -12,6 +12,21 @@ const { assertThat, is } = require("hamjest");
 const { applyFunctor, chainLiftA2, zipArgs } = require("../../src/helpers");
 
 describe("helpers", function() {
+	describe("applyFunctor", function() {
+		it("should apply functor to value", function() {
+			const fns = [
+				(x) => ({ y: x + 1 }),
+				(x) => ({ z: x + 2 })
+			]
+
+			const flow = compose(valueOf, foldMap(Assign), applyFunctor(fns))
+			const result = flow(1);
+
+			assertThat(result.y, is(2));
+			assertThat(result.z, is(3));
+		})
+	});
+
 	describe("chainLiftA2", function() {
 		const add = (a) => (b) => Just(a + b)
 
@@ -26,21 +41,6 @@ describe("helpers", function() {
 
 			assertThat(result.option(0), is(5));
 		});
-	});
-
-	describe("applyFunctor", function() {
-		it("should apply functor to value", function() {
-			const fns = [
-				(x) => ({ y: x + 1 }),
-				(x) => ({ z: x + 2 })
-			]
-
-			const flow = compose(valueOf, foldMap(Assign), applyFunctor(fns))
-			const result = flow(1);
-
-			assertThat(result.y, is(2));
-			assertThat(result.z, is(3));
-		})
 	});
 
 	describe("zipArgs", function() {
