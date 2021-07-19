@@ -5,7 +5,7 @@ const identity = require("crocks/combinators/identity");
 
 const { assertThat, is } = require("hamjest");
 
-const { getProp, getPath } = require("../../src/Result");
+const { getProp, getPath, safeResult } = require("../../src/Result");
 
 const { throwError } = require("../../src/utils");
 
@@ -89,5 +89,25 @@ describe("Result", function() {
 				});
 			});
 		}
+	});
+
+	describe("safeResult", function() {
+		const gt = (n) => (x) => x > n
+
+		it("should return Ok when pred is true", function() {
+			const error = () => { throw new Error("should not have been called") }
+			const result = safeResult(error, gt(10), 20).either(throwError, identity)
+
+			assertThat(result, is(20));
+		});
+
+		it("should return Err when pred is false", function() {
+			const n = 10;
+			const error = (x) => `${x} is not gt ${n}`;
+
+			const result = safeResult(error, gt(n), 5).either(identity, throwError)
+
+			assertThat(result, is("5 is not gt 10"));
+		});
 	});
 });
