@@ -1,14 +1,18 @@
 "use strict";
 
 const applyTo = require("crocks/combinators/applyTo");
+const compose = require("crocks/helpers/compose");
 const composeK = require("crocks/helpers/composeK");
+const coalesce = require("crocks/pointfree/coalesce");
 const concat = require("crocks/pointfree/concat");
+const constant = require("crocks/combinators/constant");
 const flip = require("crocks/combinators/flip");
 const identity = require("crocks/combinators/identity");
 const liftA2 = require("crocks/helpers/liftA2");
 const map = require("crocks/pointfree/map");
 const nAry = require("crocks/helpers/nAry");
 const pipe = require("crocks/helpers/pipe");
+const tail = require("crocks/pointfree/tail");
 
 const prepend = flip(concat);
 
@@ -33,6 +37,15 @@ const applyFunctor = flip(pipe(applyTo, map));
 const chainLiftA2 = nAry(3, composeK(identity, liftA2))
 
 /*
+ * Converts a 'Nothing' tail into a 'Just []'
+ *
+ * When concat'ing Maybe's if one is a Nothing, the result is a Nothing
+ * which we may not want. This allows a Nothing tail to be an empty list.
+ */
+// emptyTail :: m a -> Maybe (m a)
+const emptyTail = compose(coalesce(constant([]), identity), tail)
+
+/*
  * Collects the arguments to a function into an array
  */
 // zipArgs :: * -> [ * ]
@@ -46,6 +59,7 @@ const zipArgs = function() {
 module.exports = {
 	applyFunctor,
 	chainLiftA2,
+	emptyTail,
 	prepend,
 	zipArgs
 }

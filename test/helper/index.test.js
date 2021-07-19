@@ -4,12 +4,14 @@ const Assign = require("crocks/Assign");
 
 const compose = require("crocks/helpers/compose");
 const foldMap = require("crocks/pointfree/foldMap");
+const identity = require("crocks/combinators/identity");
 const valueOf = require("crocks/pointfree/valueOf");
 
 const { Just } = require("crocks/Maybe");
 const { assertThat, is } = require("hamjest");
 
-const { applyFunctor, chainLiftA2, zipArgs } = require("../../src/helpers");
+const { applyFunctor, chainLiftA2, emptyTail, zipArgs } = require("../../src/helpers");
+const { throwError } = require("../../src/utils");
 
 describe("helpers", function() {
 	describe("applyFunctor", function() {
@@ -40,6 +42,20 @@ describe("helpers", function() {
 			const result = chainLiftA2(add)(Just(2))(Just(3));
 
 			assertThat(result.option(0), is(5));
+		});
+	});
+
+	describe("emptyTail", function() {
+		it("should return empty list for tail", function() {
+			const list = [];
+
+			assertThat(emptyTail(list).either(throwError, identity), is(list));
+		});
+
+		it("should return tail when non empty", function() {
+			const list = [ "a", "b", "c", ];
+
+			assertThat(emptyTail(list).either(throwError, identity), is([ "b", "c" ]));
 		});
 	});
 
