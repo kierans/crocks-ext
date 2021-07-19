@@ -8,9 +8,15 @@ const identity = require("crocks/combinators/identity");
 const valueOf = require("crocks/pointfree/valueOf");
 
 const { Just } = require("crocks/Maybe");
-const { assertThat, is } = require("hamjest");
+const { assertThat, equalTo, is } = require("hamjest");
 
-const { applyFunctor, chainLiftA2, emptyTail, zipArgs } = require("../../src/helpers");
+const {
+	applyFunctor,
+	arrayToTuple,
+	chainLiftA2,
+	emptyTail,
+	zipArgs
+} = require("../../src/helpers");
 const { throwError } = require("../../src/utils");
 
 describe("helpers", function() {
@@ -27,6 +33,15 @@ describe("helpers", function() {
 			assertThat(result.y, is(2));
 			assertThat(result.z, is(3));
 		})
+	});
+
+	describe("arrayToTuple", function() {
+		it("should convert array to tuple", function() {
+			const arr = [ 1, 2, 3, 4 ];
+			const result = arrayToTuple(arr)
+
+			assertThat(result.toArray(), is(equalTo(arr)));
+		});
 	});
 
 	describe("chainLiftA2", function() {
