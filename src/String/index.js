@@ -21,6 +21,9 @@ const capitalise = (str) => `${str[0].toUpperCase()}${str.substring(1)}`
 // join :: String -> [ String ] -> String
 const join = curry((sep, arr) => arr.join(sep))
 
+// replace :: (String | Regexp) -> String -> String -> String
+const replace = curry((search, replace, str) => str.replace(search, replace))
+
 // split :: String -> String -> [ String ]
 const split = curry((sep, str) => str.split(sep))
 
@@ -58,6 +61,7 @@ module.exports = {
 	fromKebabCase,
 	join,
 	lowerCase,
+	replace,
 	split,
 	toCamelCase,
 	toKebabCase,

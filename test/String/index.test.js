@@ -8,6 +8,7 @@ const {
 	fromKebabCase,
 	join,
 	lowerCase,
+	replace,
 	split,
 	toCamelCase,
 	toKebabCase,
@@ -33,6 +34,10 @@ describe("String", function() {
 
 	it("should upper case word", function() {
 		assertThat(upperCase("hello"), is("HELLO"))
+	});
+
+	it("should replace string", function() {
+		assertThat(replace(/l/g, "w", "hello"), is("hewwo"));
 	});
 
 	describe("camelCase", function() {
