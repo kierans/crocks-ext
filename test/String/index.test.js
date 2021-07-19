@@ -5,6 +5,7 @@ const { assertThat, is } = require("hamjest");
 const {
 	capitalise,
 	changeCase,
+	contains,
 	fromKebabCase,
 	join,
 	lowerCase,
@@ -21,6 +22,10 @@ describe("String", function() {
 	it("should capitalise word", function() {
 		assertThat(capitalise("hello"), is("Hello"));
 	})
+
+	it("should return true when string includes word", function() {
+		assertThat(contains("hello")("hello world"), is(true));
+	});
 
 	it("should join word", function() {
 		assertThat(join("-", [ "a", "b", "c" ]), is("a-b-c"))

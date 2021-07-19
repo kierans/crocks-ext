@@ -18,6 +18,9 @@ const { emptyTail, prepend, zipArgs } = require("../helpers");
 // capitalise :: String -> String
 const capitalise = (str) => `${str[0].toUpperCase()}${str.substring(1)}`
 
+// contains :: String -> String -> Boolean
+const contains = (a) => (b) => b.includes(a)
+
 // join :: String -> [ String ] -> String
 const join = curry((sep, arr) => arr.join(sep))
 
@@ -64,6 +67,7 @@ const fromKebabCase = split("-")
 module.exports = {
 	capitalise,
 	changeCase,
+	contains,
 	fromKebabCase,
 	join,
 	lowerCase,
