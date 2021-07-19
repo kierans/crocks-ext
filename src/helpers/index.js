@@ -2,12 +2,15 @@
 
 const applyTo = require("crocks/combinators/applyTo");
 const composeK = require("crocks/helpers/composeK");
+const concat = require("crocks/pointfree/concat");
 const flip = require("crocks/combinators/flip");
 const identity = require("crocks/combinators/identity");
 const liftA2 = require("crocks/helpers/liftA2");
 const map = require("crocks/pointfree/map");
 const nAry = require("crocks/helpers/nAry");
 const pipe = require("crocks/helpers/pipe");
+
+const prepend = flip(concat);
 
 /*
  * While `map` is very handy in that it will take a function and apply it to a value, what
@@ -31,5 +34,6 @@ const chainLiftA2 = nAry(3, composeK(identity, liftA2))
 
 module.exports = {
 	applyFunctor,
-	chainLiftA2
+	chainLiftA2,
+	prepend
 }
