@@ -8,6 +8,7 @@ const {
 	contains,
 	fromKebabCase,
 	join,
+	joinPair,
 	lowerCase,
 	replace,
 	split,
@@ -29,6 +30,10 @@ describe("String", function() {
 
 	it("should join word", function() {
 		assertThat(join("-", [ "a", "b", "c" ]), is("a-b-c"))
+	});
+
+	it("should join string pair", function() {
+		assertThat(joinPair("=", "a", "b"), is("a=b"));
 	});
 
 	it("should split word", function() {

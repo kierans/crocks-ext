@@ -24,6 +24,9 @@ const contains = (a) => (b) => b.includes(a)
 // join :: String -> [ String ] -> String
 const join = curry((sep, arr) => arr.join(sep))
 
+// joinPair :: String -> String -> String -> String
+const joinPair = curry((sep, a, b) => `${a}${sep}${b}`)
+
 // replace :: (String | Regexp) -> String -> String -> String
 const replace = curry((search, replace, str) => str.replace(search, replace))
 
@@ -70,6 +73,7 @@ module.exports = {
 	contains,
 	fromKebabCase,
 	join,
+	joinPair,
 	lowerCase,
 	replace,
 	split,
