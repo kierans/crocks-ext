@@ -1,11 +1,8 @@
 "use strict";
 
-const Tuple = require("crocks/Tuple");
-
 const applyTo = require("crocks/combinators/applyTo");
 const compose = require("crocks/helpers/compose");
 const composeK = require("crocks/helpers/composeK");
-const converge = require("crocks/combinators/converge");
 const coalesce = require("crocks/pointfree/coalesce");
 const concat = require("crocks/pointfree/concat");
 const constant = require("crocks/combinators/constant");
@@ -36,10 +33,6 @@ const length = (a) => a.length
 // applyFunctor :: Functor f => f (a -> b) -> a -> f b
 const applyFunctor = flip(pipe(applyTo, map));
 
-// arrayToTuple :: [ a ] -> n-Tuple
-const arrayToTuple =
-	converge((n, args) => Tuple(n)(...args), length, identity)
-
 /*
  * Useful when the result of a liftA2 returns a Monad, so that we can fold out the inner Monad.
  */
@@ -67,7 +60,6 @@ const zipArgs = function() {
 }
 
 module.exports = {
-	arrayToTuple,
 	applyFunctor,
 	chainLiftA2,
 	emptyTail,
