@@ -1,6 +1,6 @@
 {
   "name": "@epistemology-factory/crocks-ext",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Utility functions for use with Crocks",
   "scripts": {
     "build": "cpy --cwd=src --parents . ../build && cpy package*.json README.md LICENSE build",
