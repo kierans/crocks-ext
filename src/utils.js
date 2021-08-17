@@ -1,20 +1,68 @@
 "use strict";
 
+const compose = require("crocks/helpers/compose");
+const flip = require("crocks/combinators/flip");
+const identity = require("crocks/combinators/identity");
 const ifElse = require("crocks/logic/ifElse");
+const isArray = require("crocks/predicates/isArray");
+const isEmpty = require("crocks/predicates/isEmpty");
+const isObject = require("crocks/predicates/isObject");
 const isSameType = require("crocks/predicates/isSameType");
+const isString = require("crocks/predicates/isString");
+const or = require("crocks/logic/or");
+const pipe = require("crocks/helpers/pipe");
+
+const { stringify, joinPair } = require("./String");
+
+// isScalar :: a -> Boolean
+const isScalar =
+	or(isEmpty, isString)
+
+// isNonScalar :: a -> Boolean
+const isNonScalar =
+	or(isArray, isObject)
+
+// toString :: a -> String
+const toString =
+	ifElse(isNonScalar, String, stringify)
+
+// throwValue :: a -> throws
+const throwValue = (value) => { throw new Error(value) }
+
+// throwError :: (a -> a | throws)
+const throwError =
+	ifElse(isSameType(Error), throwValue, identity)
+
+const throwNonScalar =
+	ifElse(isNonScalar, compose(throwValue, stringify), identity)
+
+// throwScalar :: (a -> a | throws)
+const throwScalar =
+	ifElse(isScalar, throwValue, identity)
 
 /*
- * Throws an error when folding out a Functor.
+ * Throws the contents when folding out a Functor.
  *
- * If used for the "left" or "error" side, will throw whatever is present as an error.
- *
- * If used for the "right" or "success" side, will throw an error indicating that the success
- * case occurred.
+ * Wraps any non Error in an Error.
  */
-// throwError :: a -> throws
-exports.throwError =
-	ifElse(
-		isSameType(Error),
-		(e) => { throw e },
-		(value) => { throw new Error(`${value} returned instead of error`) }
+// throwContents :: a -> throws
+const throwContents =
+	pipe(
+		throwError,
+		throwNonScalar,
+		throwScalar,
+		throwValue
 	)
+
+/*
+ * Wraps the value in an Error with a message and throws.
+ *
+ * Useful when you want to indicate a successful case was the wrong outcome.
+ */
+const throwResult =
+	compose(throwValue, flip(joinPair(" "))(`returned instead of error`), toString)
+
+module.exports = {
+	throwContents,
+	throwResult
+}

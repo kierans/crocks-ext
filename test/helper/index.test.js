@@ -16,7 +16,7 @@ const {
 	emptyTail,
 	zipArgs
 } = require("../../src/helpers");
-const { throwError } = require("../../src/utils");
+const { throwContents } = require("../../src/utils");
 
 describe("helpers", function() {
 	describe("applyFunctor", function() {
@@ -54,13 +54,13 @@ describe("helpers", function() {
 		it("should return empty list for tail", function() {
 			const list = [];
 
-			assertThat(emptyTail(list).either(throwError, identity), is(list));
+			assertThat(emptyTail(list).either(throwContents, identity), is(list));
 		});
 
 		it("should return tail when non empty", function() {
 			const list = [ "a", "b", "c", ];
 
-			assertThat(emptyTail(list).either(throwError, identity), is([ "b", "c" ]));
+			assertThat(emptyTail(list).either(throwContents, identity), is([ "b", "c" ]));
 		});
 	});
 

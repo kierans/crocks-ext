@@ -7,7 +7,7 @@ const { assertThat, is } = require("hamjest");
 
 const { getProp, getPath, safeResult } = require("../../src/Result");
 
-const { throwError } = require("../../src/utils");
+const { throwContents, throwResult } = require("../../src/utils");
 
 describe("Result", function() {
 	describe("getOrError", function() {
@@ -76,13 +76,13 @@ describe("Result", function() {
 						// this also tests that the error is evaluated lazily
 						const result = datum.fn(illegalCall, datum.good, datum.data);
 
-						result.either(throwError, identity);
+						result.either(throwContents, identity);
 					});
 
 					it("should return error when value not found", function() {
 						const result = datum.fn(constant(err), datum.bad, datum.data);
 
-						const e = result.either(identity, throwError);
+						const e = result.either(identity, throwContents);
 
 						assertThat(e, is(err));
 					});
@@ -96,7 +96,7 @@ describe("Result", function() {
 
 		it("should return Ok when pred is true", function() {
 			const error = () => { throw new Error("should not have been called") }
-			const result = safeResult(error, gt(10), 20).either(throwError, identity)
+			const result = safeResult(error, gt(10), 20).either(throwContents, identity)
 
 			assertThat(result, is(20));
 		});
@@ -105,7 +105,7 @@ describe("Result", function() {
 			const n = 10;
 			const error = (x) => `${x} is not gt ${n}`;
 
-			const result = safeResult(error, gt(n), 5).either(identity, throwError)
+			const result = safeResult(error, gt(n), 5).either(identity, throwResult)
 
 			assertThat(result, is("5 is not gt 10"));
 		});
