@@ -20,7 +20,7 @@ const pipe = require("crocks/helpers/pipe");
 const getPathOrError = curry((error, path) =>
 	pipe(
 		getPath(path),
-		either(() => Result.Err(error(path.join("."))), Result.of)
+		either(() => Result.Err(error(path)), Result.of)
 	)
 )
 
