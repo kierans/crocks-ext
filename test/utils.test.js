@@ -2,7 +2,9 @@
 
 const { assertThat, throws } = require("hamjest");
 
-const { throwContents } = require("../src/utils");
+const { throwContents, throwResult } = require("../src/utils");
+
+const scalars = [ 1, "error", false, null, undefined ];
 
 describe("utils", function() {
 	describe("throwContents", function() {
@@ -12,23 +14,44 @@ describe("utils", function() {
 			assertThat(() => throwContents(error), throws(error));
 		})
 
-		const scalars = [ 1, "error", false, null, undefined ];
 		scalars.forEach((scalar) => {
 			it(`should throw ${typeOf(scalar)}`, function() {
-				assertThat(() => throwContents(scalar), throws(scalar));
+				assertThat(() => throwContents(scalar), throws(new Error(String(scalar))));
 			})
 		})
 
 		it("should stringify object when throwing", function() {
-			const error = { a: 1 }
+			const obj = { a: 1 }
 
-			assertThat(() => throwContents(error), throws(JSON.stringify(error)));
+			assertThat(() => throwContents(obj), throws(new Error(JSON.stringify(obj))));
 		});
 
 		it("should stringify array when throwing", function() {
-			const error = [ 1 ]
+			const arr = [ 1 ]
 
-			assertThat(() => throwContents(error), throws(JSON.stringify(error)));
+			assertThat(() => throwContents(arr), throws(new Error(JSON.stringify(arr))));
+		});
+	});
+
+	describe("throwResult", function() {
+		const toMessage = (value) => `${value} returned`
+
+		scalars.forEach((scalar) => {
+			it(`should throw ${typeOf(scalar)}`, function() {
+				assertThat(() => throwResult(scalar), throws(new Error(toMessage(scalar))));
+			})
+		})
+
+		it("should stringify object when throwing", function() {
+			const obj = { a: 1 }
+
+			assertThat(() => throwResult(obj), throws(new Error(toMessage(JSON.stringify(obj)))));
+		});
+
+		it("should stringify array when throwing", function() {
+			const arr = [ 1 ]
+
+			assertThat(() => throwResult(arr), throws(new Error(toMessage(JSON.stringify(arr)))));
 		});
 	});
 });

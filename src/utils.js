@@ -24,21 +24,23 @@ const isNonScalar =
 
 // toString :: a -> String
 const toString =
-	ifElse(isNonScalar, String, stringify)
+	ifElse(isNonScalar, stringify, String)
 
 // throwValue :: a -> throws
-const throwValue = (value) => { throw new Error(value) }
+const throwValue = (value) => {
+	throw new Error(value)
+}
 
 // throwError :: (a -> a | throws)
 const throwError =
-	ifElse(isSameType(Error), throwValue, identity)
+	ifElse(isSameType(Error), (e) => { throw e }, identity)
 
 const throwNonScalar =
 	ifElse(isNonScalar, compose(throwValue, stringify), identity)
 
 // throwScalar :: (a -> a | throws)
 const throwScalar =
-	ifElse(isScalar, throwValue, identity)
+	ifElse(isScalar, compose(throwValue, toString), identity)
 
 /*
  * Throws the contents when folding out a Functor.
@@ -60,7 +62,7 @@ const throwContents =
  * Useful when you want to indicate a successful case was the wrong outcome.
  */
 const throwResult =
-	compose(throwValue, flip(joinPair(" "))(`returned instead of error`), toString)
+	compose(throwValue, flip(joinPair(" "))(`returned`), toString)
 
 module.exports = {
 	throwContents,
