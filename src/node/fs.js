@@ -19,8 +19,8 @@ const writeAsync = Async.fromNode(fs.writeFile);
 // readFile :: Object -> (String | Buffer | URL | Integer) -> Async Error a
 const readFile = curry((opts, path) => readAsync(path, opts))
 
-// writeFile :: Object -> (String | Buffer | TypedArray | DataView | Object) -> (String | Buffer | URL | Integer) -> Async Error a
-const writeFile = curry((opts, data, path) => writeAsync(path, data, opts))
+// writeFile :: Object -> (String | Buffer | URL | Integer) -> (String | Buffer | TypedArray | DataView | Object) -> Async Error a
+const writeFile = curry((opts, path, data) => writeAsync(path, data, opts))
 
 // readJSON :: (String | Buffer | URL | Integer) -> Async Error a
 const readJSON =
