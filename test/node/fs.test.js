@@ -6,7 +6,15 @@ const path = require("path");
 
 const rimraf = require("rimraf");
 
-const { assertThat, is } = require("hamjest");
+const {
+	allOf,
+	assertThat,
+	hasProperty,
+	instanceOf,
+	is,
+	isRejectedWith,
+	promiseThat
+} = require("hamjest");
 
 const { readJSON, writeFile } = require("../../src/node/fs");
 
@@ -50,11 +58,38 @@ describe("fs", function() {
 			assertThat(result, is(undefined));
 			await fs.promises.stat(filename);
 		});
+
+		it("should return error when unable to mkdir", async function() {
+			const dir = path.dirname(filename);
+			const parent = dirParent(dir)
+
+			await fs.promises.mkdir(parent, { recursive: true });
+
+			// make the parent directory non writeable so that we force an error
+			await fs.promises.chmod(parent, 0o500);
+
+			await promiseThat(
+				writeStringFile(filename, '{ "a": 1 }').toPromise(),
+				isRejectedWith(
+					allOf(
+						instanceOf(Error),
+						hasProperty("message", `EACCES: permission denied, mkdir '${dir}'`)
+					)
+				)
+			)
+		});
 	});
 
 	function rmFile(filename) {
 		return async function() {
 			await rimraf.sync(filename);
 		}
+	}
+
+	function dirParent(dir) {
+		const segments = dir.split("/");
+		segments.pop();
+
+		return segments.join("/");
 	}
 });
