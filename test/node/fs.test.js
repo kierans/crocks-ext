@@ -35,8 +35,9 @@ describe("fs", function() {
 		afterEach(rmFile(`${os.tmpdir()}/a`))
 
 		it("should create directories when saving file", async function() {
-			await writeStringFile(filename, '{ "a": 1 }').toPromise()
+			const result = await writeStringFile(filename, '{ "a": 1 }').toPromise()
 
+			assertThat(result, is(undefined));
 			await fs.promises.stat(filename);
 		});
 
@@ -44,11 +45,11 @@ describe("fs", function() {
 			const dirs = path.dirname(filename);
 			await fs.promises.mkdir(dirs, { recursive: true });
 
-			await writeStringFile(filename, '{ "a": 1 }').toPromise()
+			const result = await writeStringFile(filename, '{ "a": 1 }').toPromise()
 
+			assertThat(result, is(undefined));
 			await fs.promises.stat(filename);
 		});
-
 	});
 
 	function rmFile(filename) {
