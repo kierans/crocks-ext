@@ -4,12 +4,12 @@ const path = require("path");
 const { spawnSync } = require("child_process");
 
 /*
- * Searches NPM for the @wpay/sdk module at a given version
+ * Searches NPM for the package at a given version
  *
  * Exit codes
  *  - 0 - Module not found at version
  *  - 1 - Module found at version
- *  - 2 - No version supplied
+ *  - 2 - Incorrect arguments given
  */
 
 if (process.argv.length < 4) {
