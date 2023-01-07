@@ -35,7 +35,7 @@ jobs:
       - name: Commit formatting changes
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          git add src/ test/ types/ || echo "No changes to stage"
+          git add src/ test/ || echo "No changes to stage"
           git commit -m 'Formatting changes' || echo "No changes to commit"
 
       # Can't be in a separate job as we need the results of any build to be included in
