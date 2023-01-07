@@ -1,7 +1,8 @@
 #! /bin/sh
 
-name=$(npm -s run env echo '$npm_package_name')
-version=$(npm -s run env echo '$npm_package_version')
+# https://docs.npmjs.com/cli/v7/using-npm/changelog?v=true#720-2020-12-15
+name=$(npm pkg get name | tr -d '"')
+version=$(npm pkg get version | tr -d '"')
 
 node $PWD/scripts/check-version-published.js $name $version
 
