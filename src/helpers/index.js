@@ -14,11 +14,6 @@ const nAry = require("crocks/helpers/nAry");
 const pipe = require("crocks/helpers/pipe");
 const tail = require("crocks/pointfree/tail");
 
-const prepend = flip(concat);
-
-// length :: a -> Number
-const length = (a) => a.length
-
 /*
  * While `map` is very handy in that it will take a function and apply it to a value, what
  * happens when we want to take an array of functions and apply them to a value?
@@ -47,6 +42,11 @@ const chainLiftA2 = nAry(3, composeK(identity, liftA2))
  */
 // emptyTail :: m a -> Maybe (m a)
 const emptyTail = compose(coalesce(constant([]), identity), tail)
+
+// length :: a -> Number
+const length = (a) => a.length
+
+const prepend = flip(concat);
 
 /*
  * Collects the arguments to a function into an array
