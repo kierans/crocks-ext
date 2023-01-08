@@ -8,12 +8,13 @@ const identity = require("crocks/combinators/identity");
 const valueOf = require("crocks/pointfree/valueOf");
 
 const { Just } = require("crocks/Maybe");
-const { assertThat, is } = require("hamjest");
+const { assertThat, hasItem, hasSize, is } = require("hamjest");
 
 const {
 	applyFunctor,
 	chainLiftA2,
 	emptyTail,
+	unique,
 	zipArgs
 } = require("../../src/helpers");
 const { throwContents } = require("../../src/utils");
@@ -61,6 +62,25 @@ describe("helpers", function() {
 			const list = [ "a", "b", "c", ];
 
 			assertThat(emptyTail(list).either(throwContents, identity), is([ "b", "c" ]));
+		});
+	});
+
+	describe("unique", function() {
+		it("should filter list for unique items", function() {
+			const items = [
+				"milk",
+				"bread",
+				"jam",
+				"bread",
+				"milk"
+			];
+
+			const result = unique(items);
+
+			assertThat(result, hasSize(3));
+			assertThat(result, hasItem("milk"));
+			assertThat(result, hasItem("bread"));
+			assertThat(result, hasItem("jam"));
 		});
 	});
 
