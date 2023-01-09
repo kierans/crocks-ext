@@ -13,7 +13,8 @@ const mreduce = require("crocks/helpers/mreduce");
 const option = require("crocks/pointfree/option");
 const pipe = require("crocks/helpers/pipe");
 
-const { emptyTail, prepend, zipArgs } = require("../helpers");
+const { emptyTail, prepend } = require("../helpers");
+const { zipArgs } = require("../helpers/zip");
 
 // capitalise :: String -> String
 const capitalise = (str) => `${str[0].toUpperCase()}${str.substring(1)}`

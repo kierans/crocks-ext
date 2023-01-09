@@ -6,18 +6,13 @@ const compose = require("crocks/helpers/compose");
 const composeK = require("crocks/helpers/composeK");
 const concat = require("crocks/pointfree/concat");
 const constant = require("crocks/combinators/constant");
-const converge = require("crocks/combinators/converge");
 const flip = require("crocks/combinators/flip");
 const identity = require("crocks/combinators/identity");
 const liftA2 = require("crocks/helpers/liftA2");
 const map = require("crocks/pointfree/map");
 const nAry = require("crocks/helpers/nAry");
-const option = require("crocks/pointfree/option");
 const pipe = require("crocks/helpers/pipe");
 const tail = require("crocks/pointfree/tail");
-
-const { getKeys, getValue, setValue, reduceToMap } = require("../Map");
-const { inc } = require("../math");
 
 /*
  * While `map` is very handy in that it will take a function and apply it to a value, what
@@ -39,21 +34,6 @@ const applyFunctor = flip(pipe(applyTo, map));
 // chainLiftA2 :: Applicative m => (a -> b -> m c) -> m a -> m b -> m c
 const chainLiftA2 = nAry(3, composeK(identity, liftA2))
 
-// countItem :: Map a Integer -> a -> Map a Integer
-const countItem = flip((key) =>
-	converge(
-		setValue(key),
-		compose(inc, option(0), getValue(key)),
-		identity,
-	)
-)
-
-/*
- * We use a Map so that any value can be a key
- */
-// countItems :: Foldable f => f a -> Map a Integer
-const countItems = reduceToMap(countItem)
-
 /*
  * Converts a 'Nothing' tail into a 'Just []'
  *
@@ -63,35 +43,11 @@ const countItems = reduceToMap(countItem)
 // emptyTail :: m a -> Maybe (m a)
 const emptyTail = compose(coalesce(constant([]), identity), tail)
 
-// length :: a -> Number
-const length = (a) => a.length
-
 const prepend = flip(concat);
-
-/*
- * Filters a list of data for unique items
- */
-// unique :: Foldable f => f a -> [ a ]
-const unique =
-	compose(getKeys, countItems)
-
-/*
- * Collects the arguments to a function into an array
- */
-// zipArgs :: * -> [ * ]
-const zipArgs = function() {
-	/*
-	 * Can't be an arrow function because of the way Node args work.
-	 */
-	return Array.prototype.slice.call(arguments)
-}
 
 module.exports = {
 	applyFunctor,
 	chainLiftA2,
 	emptyTail,
-	length,
-	prepend,
-	unique,
-	zipArgs
+	prepend
 }
