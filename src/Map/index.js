@@ -92,8 +92,11 @@ const getValue = curry((key) =>
 const getValues = (m) =>
 	collect(m.values())
 
-// hasValue :: Map a b -> a -> Boolean
-const hasValue = curry((m, key) =>
+/*
+ * Follows the parameter order of Crock's hasProp
+ */
+// hasValue :: a -> Map a b -> Boolean
+const hasValue = curry((key, m) =>
 	m.has(key)
 )
 

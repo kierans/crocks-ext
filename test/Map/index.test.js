@@ -95,13 +95,13 @@ describe("Map", function() {
 
 	describe("hasValue", function() {
 		it("should return true when value present", function() {
-			const result = hasValue(people, "Bruce");
+			const result = hasValue("Bruce", people);
 
 			assertThat(result, is(true));
 		});
 
 		it("should return false when value not present", function() {
-			const result = hasValue(people, "Steve");
+			const result = hasValue("Steve", people);
 
 			assertThat(result, is(false));
 		});
