@@ -71,7 +71,7 @@ const prepend = flip(concat);
 /*
  * Filters a list of data for unique items
  */
-// unique :: Foldable f => f a -> f a
+// unique :: Foldable f => f a -> [ a ]
 const unique =
 	compose(getKeys, countItems)
 
