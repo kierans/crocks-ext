@@ -13,17 +13,78 @@ const {
 	instanceOf,
 	is,
 	isRejectedWith,
-	promiseThat
+	promiseThat,
 } = require("hamjest");
 
-const { readJSON, writeFile } = require("../../src/node/fs");
+const {
+	readDir,
+	readDirContents,
+	readFile,
+	readJSON,
+	writeFile
+} = require("../../src/node/fs");
 
 describe("fs", function() {
-	describe("readJSON", function() {
-		const filename = `${os.tmpdir()}/fs.test.json`;
+	const testDataDir = `${os.tmpdir()}/crocks-ext`;
 
-		beforeEach(rmFile(filename))
-		afterEach(rmFile(filename))
+	beforeEach(async function() {
+		await rmFile(testDataDir);
+
+		fs.mkdirSync(testDataDir, { recursive: true });
+	});
+
+	afterEach(rmFile(testDataDir));
+
+	describe("readDir", function() {
+		const filename = "tmp.txt";
+		const contents = "Hello World";
+
+		beforeEach(function() {
+			fs.writeFileSync(`${testDataDir}/${filename}`, contents);
+		});
+
+		it("should read dir", async function() {
+			const contents = await readDir(testDataDir).toPromise();
+
+			assertThat(contents.length, is(1));
+			assertThat(contents[0], is(`${testDataDir}/${filename}`));
+		});
+	});
+
+	describe("readDirContents", function() {
+		const filename = "tmp.txt";
+		const contents = "Hello World";
+
+		beforeEach(function() {
+			fs.writeFileSync(`${testDataDir}/${filename}`, contents, { encoding: "utf8" });
+		});
+
+		it("should read dir contents", async function() {
+			const result = await readDirContents({ encoding: "utf8" }, testDataDir).toPromise();
+
+			assertThat(result.length, is(1));
+			assertThat(result[0].fst(), is(`${testDataDir}/${filename}`));
+			assertThat(result[0].snd(), is(contents));
+		});
+	});
+
+	describe("readFile", function() {
+		const filename = `${testDataDir}/tmp.txt`;
+		const contents = "Hello World";
+
+		beforeEach(function() {
+			fs.writeFileSync(filename, contents, { encoding: "utf8" });
+		});
+
+		it("should read file contents", async function() {
+			const result = await readFile({ encoding: "utf8" }, filename).toPromise();
+
+			assertThat(result, is(contents));
+		});
+	});
+
+	describe("readJSON", function() {
+		const filename = `${testDataDir}/fs.test.json`;
 
 		it("should read json", async function() {
 			fs.writeFileSync(filename, '{ "a": 1 }')
@@ -36,11 +97,7 @@ describe("fs", function() {
 
 	describe("writeFile", function() {
 		const writeStringFile = writeFile({ encoding: "utf8" });
-
-		const filename = `${os.tmpdir()}/a/b/c/fs.test.json`
-
-		beforeEach(rmFile(`${os.tmpdir()}/a`))
-		afterEach(rmFile(`${os.tmpdir()}/a`))
+		const filename = `${testDataDir}/a/b/c/fs.test.json`
 
 		it("should create directories when saving file", async function() {
 			const result = await writeStringFile(filename, '{ "a": 1 }').toPromise()
