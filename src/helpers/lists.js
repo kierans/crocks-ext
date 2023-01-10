@@ -2,6 +2,7 @@
 
 const compose = require("crocks/helpers/compose");
 const converge = require("crocks/combinators/converge");
+const curry = require("crocks/helpers/curry");
 const flip = require("crocks/combinators/flip");
 const identity = require("crocks/combinators/identity");
 const option = require("crocks/pointfree/option");
@@ -27,6 +28,11 @@ const countItems = reduceToMap(countItem)
 // length :: [ a ] -> Number
 const length = (a) => a.length
 
+// slice :: Integer -> Integer -> [ a ] -> [ a ]
+const slice = curry((start, end, arr) =>
+	arr.slice(start, end)
+)
+
 /*
  * Filters a list of data for unique items
  */
@@ -36,5 +42,6 @@ const unique =
 
 module.exports = {
 	length,
+	slice,
 	unique
 }
