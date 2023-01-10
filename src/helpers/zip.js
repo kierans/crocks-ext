@@ -44,6 +44,8 @@ const zipArgs = function() {
 // zipTo :: ((*) -> b) -> [ [ a ] ] -> [ b ]
 const zipTo = (fn) => (...arrs) => {
 	const min = mreduce(Min, map(length, arrs));
+
+	// collectors :: [ (*) -> b ]
 	const collectors = collectLoop(min, constant(nAry(length(arrs), fn)))
 
 	// applyCollector :: [ (*) -> b ] -> a -> Integer -> ((*) -> b | b)
