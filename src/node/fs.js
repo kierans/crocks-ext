@@ -24,7 +24,6 @@ const substitution = require("crocks/combinators/substitution");
 
 const { parse } = require("./json");
 const { zipToPair } = require("../helpers/zip");
-const { joinPair } = require("../String");
 
 const trinary = nAry(3);
 
@@ -40,12 +39,17 @@ const mkdirAsync = binary(Async.fromNode(fs.mkdir));
 // dirname :: String -> String
 const dirname = (file) => path.dirname(file)
 
+// joinPaths :: String -> String -> String
+const joinPaths = binary((...paths) =>
+	path.join(...paths)
+)
+
 // readDir -> String -> Async Error [ String ]
 const readDir =
 	converge(
 		// Async Error [ String ]
 		compose(map, map),
-		joinPair(path.sep),
+		joinPaths,
 		Async.fromNode(fs.readdir)
 	)
 
@@ -67,7 +71,7 @@ const readDirContents = curry((opts) =>
 const ignoreExistingDirectory =
 	ifElse(
 		({ code }) => code === "EEXIST",
-		() => Async.Resolved(),
+		constant(Async.Resolved),
 		Async.Rejected
 	)
 
@@ -87,6 +91,16 @@ const writeFile = curry((opts, path, data) =>
 	])
 )
 
+/*
+ * `writeToDir` allows a base dir to be set to write files to.
+ *
+ * When the relative filename and data is given, the result from `writeFile` is returned.
+ */
+// writeToDir :: Object -> String -> String -> (String | Buffer | TypedArray | DataView | Object) -> Async Error Unit
+const writeToDir = curry((opts, dir) =>
+	compose(writeFile(opts), joinPaths(dir))
+)
+
 // readJSON :: (String | Buffer | URL | Integer) -> Async Error a
 const readJSON =
 	pipe(
@@ -99,5 +113,6 @@ module.exports = {
 	readDirContents,
 	readFile,
 	readJSON,
-	writeFile
+	writeFile,
+	writeToDir
 }

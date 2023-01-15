@@ -21,7 +21,8 @@ const {
 	readDirContents,
 	readFile,
 	readJSON,
-	writeFile
+	writeFile,
+	writeToDir
 } = require("../../src/node/fs");
 
 describe("fs", function() {
@@ -134,6 +135,19 @@ describe("fs", function() {
 					)
 				)
 			)
+		});
+	});
+
+	describe("writeToDir", function() {
+		const writeStringFile = writeToDir({ encoding: "utf8" }, testDataDir);
+		const filename = "a/b/c/fs.test.json";
+		const absoluteFilename = `${testDataDir}/${filename}`;
+
+		it("should write file to dir", async function() {
+			const result = await writeStringFile(filename, '{ "a": 1 }').toPromise()
+
+			assertThat(result, is(undefined));
+			await fs.promises.stat(absoluteFilename);
 		});
 	});
 
