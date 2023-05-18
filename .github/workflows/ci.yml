@@ -10,12 +10,26 @@ on:
 permissions:
   contents: write
 
+env:
+  bot_username: github-actions
+  bot_email: github-actions@github.com
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - uses: benjlevesque/short-sha@v2.1
+        id: short-sha
+        with:
+          length: 7
+
+      - name: Git setup
+        run: |
+          git config user.name ${{ env.bot_username }}
+          git config user.email ${{ env.bot_email }}
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -31,25 +45,57 @@ jobs:
         run: npm run dist:build
 
       - name: Commit formatting changes
-        if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           git add src/ test/ || echo "No changes to stage"
           git commit -m 'Formatting changes' || echo "No changes to commit"
+          git push
+
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          key: build-${{ env.SHA }}
+          path: "build"
+
+  publish:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs: [ build ]
+    steps:
+      - uses: benjlevesque/short-sha@v2.1
+        id: short-sha
+        with:
+          length: 7
+
+      - name: Restore Cache
+        uses: actions/cache@v3
+        with:
+          key: build-${{ env.SHA }}
+          path: "build"
+
+      - name: Repackage
+        run: |
+          mv build/* .
+          rmdir build
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: https://registry.npmjs.org/
+          cache: 'npm'
 
       - name: Publish
         id: publish
-        if: ${{ github.ref == 'refs/heads/main' }}
         uses: JS-DevTools/npm-publish@v2
         with:
           token: ${{ secrets.NPM_TOKEN }}
 
       - name: Tag
         id: tag
-        if: ${{ github.ref == 'refs/heads/main' }}
         uses: kierans/gh-action-tag-on-npm-version@master
         with:
-          git-user-name: github-actions
-          git-user-email: github-actions@github.com
+          git-user-name: ${{ env.bot_username }}
+          git-user-email: ${{ env.bot_email }}
 
       - name: Release
         if: ${{ steps.tag.outputs.tag-created == 'true' }}
