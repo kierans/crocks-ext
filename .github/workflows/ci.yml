@@ -71,6 +71,7 @@ jobs:
         with:
           key: build-${{ env.SHA }}
           path: "build"
+          fail-on-cache-miss: true
 
       - name: Repackage
         run: |
