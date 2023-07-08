@@ -9,6 +9,7 @@ const {
 	fromKebabCase,
 	join,
 	joinPair,
+	length,
 	lowerCase,
 	replace,
 	split,
@@ -58,6 +59,10 @@ describe("String", function() {
 
 	it("should trim data", function() {
 		assertThat(trim("    hello   "), is("hello"));
+	});
+
+	it("should return string length", function() {
+		assertThat(length("hello"), is(5));
 	})
 
 	describe("camelCase", function() {
@@ -81,7 +86,7 @@ describe("String", function() {
 
 		it("should return blank string for empty list", function() {
 			assertThat(toKebabCase([]), is(""));
-		})
+		});
 	});
 
 	it("should change case", function() {

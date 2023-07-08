@@ -65,8 +65,11 @@ const toKebabCase =
 // changeCase :: (String -> [ String ]) -> ([ String ] -> String) -> String -> String
 const changeCase = binary(compose(mreduce(Endo), zipArgs))
 
-// fromKebabCase
+// fromKebabCase :: String -> [ String ]
 const fromKebabCase = split("-")
+
+// length :: String -> Integer
+const length = (a) => a.length
 
 module.exports = {
 	capitalise,
@@ -75,6 +78,7 @@ module.exports = {
 	fromKebabCase,
 	join,
 	joinPair,
+	length,
 	lowerCase,
 	replace,
 	split,
