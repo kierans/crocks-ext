@@ -3,10 +3,12 @@
 const { assertThat, is } = require("hamjest");
 
 const {
+	isEven,
 	isGreaterThan,
 	isGreaterThanEqualTo,
 	isLessThan,
 	isLessThanEqualTo,
+	isOdd,
 	matchesRegex
 } = require("../../src/predicates");
 
@@ -39,5 +41,15 @@ describe("predicates", function() {
 			assertThat(isLessThanEqualTo(2, 3), is(false));
 			assertThat(isLessThanEqualTo(2, 2), is(true));
 		});
+	});
+
+	it("should match even number", function() {
+		assertThat(isEven(2), is(true));
+		assertThat(isEven(3), is(false));
+	});
+
+	it("should match odd number", function() {
+		assertThat(isOdd(2), is(false));
+		assertThat(isOdd(3), is(true));
 	});
 });
