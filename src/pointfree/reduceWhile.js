@@ -8,6 +8,7 @@ const fanout = require("crocks/Pair/fanout");
 const head = require("crocks/pointfree/head");
 const ifElse = require("crocks/logic/ifElse");
 const option = require("crocks/pointfree/option");
+const pipe = require("crocks/helpers/pipe");
 const map = require("crocks/pointfree/map");
 const merge = require("crocks/pointfree/merge");
 const tail = require("crocks/pointfree/tail");
@@ -15,18 +16,9 @@ const tail = require("crocks/pointfree/tail");
 // rest :: Foldable f => f a -> f a
 const rest = compose(option([]), tail)
 
-// reduceItem :: Foldable f => (a -> b -> Boolean) -> (a -> b -> a) -> a -> b -> (f b -> a)
-const reduceItem = curry((pred, f, acc) =>
-	ifElse(
-		pred(acc),
-		compose(reduceWhile(pred, f), f(acc)),
-		constant(constant(acc))
-	)
-)
-
-// reduceHead :: Foldable f => (a -> b -> Boolean) -> (a -> b -> a) -> a -> f b -> (f b -> a)
-const reduceHead = curry((pred, f, acc) =>
-	compose(option(constant(acc)), map(reduceItem(pred, f, acc)), head)
+// reduceHead :: Foldable f => (a -> Boolean) -> (a -> (f a -> b)) -> (a -> (f a -> b)) -> f a -> (f a -> b)
+const reduceHead = curry((pred, ifTrue, ifFalse) =>
+	compose(option(ifFalse), map(ifElse(pred, ifTrue, constant(ifFalse))), head)
 )
 
 /*
@@ -39,7 +31,10 @@ const reduceHead = curry((pred, f, acc) =>
  */
 // reduceWhile :: Foldable f => (a -> b -> Boolean) -> (a -> b -> a) -> a -> f b -> a
 const reduceWhile = curry((pred, f, acc) =>
-	compose(merge(applyTo), fanout(rest, reduceHead(pred, f, acc)))
+	pipe(
+		fanout(rest, reduceHead(pred(acc), compose(reduceWhile(pred, f), f(acc)), constant(acc))),
+		merge(applyTo)
+	)
 )
 
 module.exports = {
