@@ -16,7 +16,7 @@ const tail = require("crocks/pointfree/tail");
 // rest :: Foldable f => f a -> f a
 const rest = compose(option([]), tail)
 
-// reduceHead :: Foldable f => (a -> Boolean) -> (a -> (f a -> b)) -> (a -> (f a -> b)) -> f a -> (f a -> b)
+// reduceHead :: Foldable f => (a -> Boolean) -> (a -> (f a -> b)) -> (f a -> b) -> f a -> (f a -> b)
 const reduceHead = curry((pred, ifTrue, ifFalse) =>
 	compose(option(ifFalse), map(ifElse(pred, ifTrue, constant(ifFalse))), head)
 )
@@ -25,7 +25,7 @@ const reduceHead = curry((pred, ifTrue, ifFalse) =>
  * `reduceWhile` reduces a list as long as the predicate function holds true.
  *
  * Due to the predicate function being curried, if the predicate is only interested in the
- * accumulator, it should return a function wrapping the test do that the item is ignored.
+ * accumulator, it should return a function wrapping the test so that the item is ignored.
  * Alternatively, if the predicate is only interested in testing the item, have a factory
  * function that ignores the accumulator and returns the real predicate function.
  */
