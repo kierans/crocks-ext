@@ -3,14 +3,12 @@
 const applyTo = require("crocks/combinators/applyTo");
 const compose = require("crocks/helpers/compose");
 const constant = require("crocks/combinators/constant");
+const converge = require("crocks/combinators/converge");
 const curry = require("crocks/helpers/curry");
-const fanout = require("crocks/Pair/fanout");
 const head = require("crocks/pointfree/head");
 const ifElse = require("crocks/logic/ifElse");
 const option = require("crocks/pointfree/option");
-const pipe = require("crocks/helpers/pipe");
 const map = require("crocks/pointfree/map");
-const merge = require("crocks/pointfree/merge");
 const tail = require("crocks/pointfree/tail");
 
 // rest :: Foldable f => f a -> f a
@@ -31,9 +29,10 @@ const reduceHead = curry((pred, ifTrue, ifFalse) =>
  */
 // reduceWhile :: Foldable f => (a -> b -> Boolean) -> (a -> b -> a) -> a -> f b -> a
 const reduceWhile = curry((pred, f, acc) =>
-	pipe(
-		fanout(rest, reduceHead(pred(acc), compose(reduceWhile(pred, f), f(acc)), constant(acc))),
-		merge(applyTo)
+	converge(
+		applyTo,
+		rest,
+		reduceHead(pred(acc), compose(reduceWhile(pred, f), f(acc)), constant(acc))
 	)
 )
 
