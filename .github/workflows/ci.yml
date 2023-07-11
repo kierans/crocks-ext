@@ -108,4 +108,6 @@ jobs:
 
       - name: Release
         if: ${{ steps.tag.outputs.tag-created == 'true' }}
-        uses: eloquent/github-release-action@v3
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: false
