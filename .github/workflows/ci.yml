@@ -111,4 +111,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           prerelease: false
+          generate_release_notes: true
           tag_name: ${{ steps.tag.outputs.tag }}
