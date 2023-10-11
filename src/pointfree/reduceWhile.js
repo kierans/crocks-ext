@@ -14,9 +14,14 @@ const tail = require("crocks/pointfree/tail");
 // rest :: Foldable f => f a -> f a
 const rest = compose(option([]), tail)
 
-// reduceHead :: Foldable f => (a -> Boolean) -> (a -> (f a -> b)) -> (f a -> b) -> f a -> (f a -> b)
+// ifHead :: Functor m => (b -> Boolean) -> (b -> (f b -> a) -> (b -> (f b -> a)) -> m b
+const ifHead = curry((pred, ifTrue, ifFalse) =>
+	map(ifElse(pred, ifTrue, ifFalse))
+)
+
+// reduceHead :: Foldable f => (b -> Boolean) -> (b -> (f b -> a) -> (f b -> a) -> f b -> (f b -> a)
 const reduceHead = curry((pred, ifTrue, ifFalse) =>
-	compose(option(ifFalse), map(ifElse(pred, ifTrue, constant(ifFalse))), head)
+	compose(option(ifFalse), ifHead(pred, ifTrue, constant(ifFalse)), head)
 )
 
 /*
@@ -25,11 +30,15 @@ const reduceHead = curry((pred, ifTrue, ifFalse) =>
  * Due to the predicate function being curried, if the predicate is only interested in the
  * accumulator, it should return a function wrapping the test so that the item is ignored.
  * Alternatively, if the predicate is only interested in testing the item, have a factory
- * function that ignores the accumulator and returns the real predicate function.
+ * function that ignores the accumulator and returns the predicate function for the item.
  */
 // reduceWhile :: Foldable f => (a -> b -> Boolean) -> (a -> b -> a) -> a -> f b -> a
 const reduceWhile = curry((pred, f, acc) =>
 	converge(
+		/*
+		 * We want to apply the function to the entire array.
+		 * Using `map` would see the array mapped over.
+		 */
 		applyTo,
 		rest,
 		reduceHead(pred(acc), compose(reduceWhile(pred, f), f(acc)), constant(acc))
