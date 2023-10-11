@@ -18,7 +18,7 @@ const trinary = nAry(3);
 // rest :: Foldable f => f a -> f a
 const rest = compose(option([]), tail)
 
-// ifHead :: Functor m => (b -> Boolean) -> (b -> (f b -> a) -> (b -> (f b -> a)) -> m b -> m b
+// ifHead :: Functor m => (b -> Boolean) -> (b -> (f b -> a) -> (b -> (f b -> a)) -> m b -> m (f b -> a)
 const ifHead = trinary(compose(map, ifElse))
 
 // reduceHead :: Foldable f => (b -> Boolean) -> (b -> (f b -> a) -> (f b -> a) -> f b -> (f b -> a)
