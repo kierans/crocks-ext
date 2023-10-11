@@ -9,15 +9,17 @@ const head = require("crocks/pointfree/head");
 const ifElse = require("crocks/logic/ifElse");
 const option = require("crocks/pointfree/option");
 const map = require("crocks/pointfree/map");
+const nAry = require("crocks/helpers/nAry");
 const tail = require("crocks/pointfree/tail");
+
+// trinary :: a -> b -> c -> d
+const trinary = nAry(3);
 
 // rest :: Foldable f => f a -> f a
 const rest = compose(option([]), tail)
 
-// ifHead :: Functor m => (b -> Boolean) -> (b -> (f b -> a) -> (b -> (f b -> a)) -> m b
-const ifHead = curry((pred, ifTrue, ifFalse) =>
-	map(ifElse(pred, ifTrue, ifFalse))
-)
+// ifHead :: Functor m => (b -> Boolean) -> (b -> (f b -> a) -> (b -> (f b -> a)) -> m b -> m b
+const ifHead = trinary(compose(map, ifElse))
 
 // reduceHead :: Foldable f => (b -> Boolean) -> (b -> (f b -> a) -> (f b -> a) -> f b -> (f b -> a)
 const reduceHead = curry((pred, ifTrue, ifFalse) =>
