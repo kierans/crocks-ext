@@ -14,7 +14,7 @@ const tail = require("crocks/pointfree/tail");
 // rest :: Foldable f => f a -> f a
 const rest = compose(option([]), tail)
 
-// ifHead :: (b -> Boolean) -> (b -> (f b -> a) -> (b -> (f b -> a)) -> b -> (f b -> a)
+// ifHead :: (b -> Boolean) -> (b -> (f b -> a)) -> (b -> (f b -> a)) -> b -> (f b -> a)
 const ifHead = ifElse
 
 // noHead :: a -> (f b -> a)
